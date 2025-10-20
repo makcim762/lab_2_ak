@@ -1,13 +1,20 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -std=c++17
+SRC = src/main.cpp src/calculator.cpp
+OBJ = $(SRC:.cpp=.o)
+TARGET = app
+LIB = libcalculator.a
 
-TARGET = cmd_parce_app
-SRC = src/main.cpp
+all: $(LIB) $(TARGET)
 
-all: $(TARGET)
+$(LIB): src/calculator.o
+	ar rcs $(LIB) src/calculator.o
 
-$(TARGET): $(SRC)
-	$(CXX) $(CXXFLAGS) $(SRC) -o $(TARGET)
+$(TARGET): src/main.o $(LIB)
+	$(CXX) $(CXXFLAGS) src/main.o -L. -lcalculator -o $(TARGET)
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(TARGET)
+	rm -f src/*.o $(TARGET) $(LIB)
